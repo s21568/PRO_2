@@ -15,24 +15,33 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
+import pl.edu.pja.pro_2.database.WishDb
 import pl.edu.pja.pro_2.service.AlertService
 
 private const val REQUEST_CODE = 1
+private val geofence:ArrayList<Geofence> = arrayListOf()
+private var id:Int=1
 
 object Geofencing {
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun createGeoFence(context: Context, latLng: LatLng) {
-        Log.d("xd","dodano $latLng")
-        val geofence = Geofence.Builder()
-            .setCircularRegion(latLng.latitude, latLng.longitude, Range.toFloat())
-            .setRequestId("home")
-            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-            .setExpirationDuration(Geofence.NEVER_EXPIRE)
-            .build()
+        geofence.forEach {
+            Log.d("xd","dodano ${it.requestId}")
+        }
+
+        geofence.add(
+            Geofence.Builder()
+                .setCircularRegion(latLng.latitude, latLng.longitude, Range.toFloat())
+                .setRequestId("item ${id++}")
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .build()
+        )
 
         val request = GeofencingRequest.Builder()
-            .addGeofence(geofence)
+            .addGeofences(geofence)
             .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
             .build()
 

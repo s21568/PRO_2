@@ -14,7 +14,7 @@ class WishVH(private val view: WishItemCardBinding) : RecyclerView.ViewHolder(vi
     @SuppressLint("SetTextI18n")
     fun bind(wishDto: WishDto) {
 
-        val geocoder: Geocoder = Geocoder(view.root.context, Locale.forLanguageTag("pl-PL"))
+        val geocoder = Geocoder(view.root.context, Locale.forLanguageTag("pl-PL"))
         val adress =
             geocoder.getFromLocation(wishDto.latitude.toDouble(), wishDto.longtitude.toDouble(), 1)
 

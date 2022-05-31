@@ -42,11 +42,6 @@ class AlertService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.getBooleanExtra("check", false) == true) {
             checkLocation()
-        } else {
-            val geofence = intent?.let {
-                GeofencingEvent.fromIntent(it)
-            }
-            val id = geofence?.triggeringGeofences?.firstOrNull()?.requestId
         }
         startForeground(NOTIFICATION_ID, Notifications.createNotification(this))
         return START_STICKY
@@ -60,10 +55,6 @@ class AlertService : Service() {
             numUpdates = 1
         }
         locationClient.requestLocationUpdates(req, callback, Looper.getMainLooper())
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onBind(intent: Intent): IBinder? = null
