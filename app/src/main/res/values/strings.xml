@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">PRO_2</string>
+    <string name="wish_picture_desc">miniatura podpunktu</string>
+    <string name="add_new_wish_button">dodaj nowy podpunkt</string>
+    <string name="add_picture_wish_button">Dodaj zdjęcie</string>
+    <string name="edit_picture_wish_button">Edytuj zdjęcie</string>
+    <string name="add_location_wish_button">Dodaj lokalizacje</string>
+    <string name="edit_location_wish_button">Edytuj lokalizacje</string>
+    <string name="picture_wish">Zdjecie produktu</string>
+    <string name="location_wish">Lokalizacja</string>
+    <string name="name_wish_desc">Nazwa</string>
+    <string name="desctiptionDesc">Opis</string>
+
+    <string name="wanna_delete_this_wish_title">Usunąć Produkt?</string>
+    <string name="wanna_delete_this_wish_desc">Czy na pewno chcesz usunąć ten produkt?</string>
+
+
+    <string name="exit_button">Anuluj</string>
+    <string name="save_button">Dodaj</string>
+    <string name="edit_button">Edytuj</string>
+
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>
