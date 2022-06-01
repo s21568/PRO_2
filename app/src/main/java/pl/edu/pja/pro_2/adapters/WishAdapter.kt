@@ -2,14 +2,19 @@ package pl.edu.pja.pro_2.adapters
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.os.HandlerCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.model.LatLng
 import pl.edu.pja.pro_2.EditWishActivity
+import pl.edu.pja.pro_2.Geofencing
 import pl.edu.pja.pro_2.R
 import pl.edu.pja.pro_2.database.WishDb
 import pl.edu.pja.pro_2.database.WishDto
@@ -21,7 +26,9 @@ class WishAdapter(private val db: WishDb) : RecyclerView.Adapter<WishVH>() {
 
     private var wishList = listOf<WishDto>()
     private val mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
+    private var con: Context? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WishVH {
         val view = WishItemCardBinding.inflate(
@@ -31,6 +38,8 @@ class WishAdapter(private val db: WishDb) : RecyclerView.Adapter<WishVH>() {
         )
 
         return WishVH(view).also { holder ->
+
+            con=holder.itemView.context
             view.root.setOnClickListener {
                 val intent =
                     Intent(holder.itemView.context, EditWishActivity::class.java)
@@ -48,6 +57,8 @@ class WishAdapter(private val db: WishDb) : RecyclerView.Adapter<WishVH>() {
                         holder.itemView.context.getString(R.string.yes),
                         Toast.LENGTH_SHORT
                     ).show()
+                    val wish = wishList[holder.layoutPosition]
+                    con?.let { Geofencing.removeGeofence(it,LatLng(wish.latitude.toDouble(),wish.longtitude.toDouble())) }
                     delete(holder.layoutPosition)
                     notifyDataSetChanged()
                 }
@@ -77,6 +88,7 @@ class WishAdapter(private val db: WishDb) : RecyclerView.Adapter<WishVH>() {
         mainHandler.post { notifyDataSetChanged() }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun delete(layoutPosition: Int) = thread {
         val wish = wishList[layoutPosition]
         db.wish.delete(wish.id)

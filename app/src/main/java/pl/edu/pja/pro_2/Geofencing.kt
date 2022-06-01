@@ -1,6 +1,7 @@
 package pl.edu.pja.pro_2
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -19,22 +20,17 @@ import pl.edu.pja.pro_2.database.WishDb
 import pl.edu.pja.pro_2.service.AlertService
 
 private const val REQUEST_CODE = 1
-private val geofence:ArrayList<Geofence> = arrayListOf()
-private var id:Int=1
+private val geofence: ArrayList<Geofence> = arrayListOf()
 
 object Geofencing {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun createGeoFence(context: Context, latLng: LatLng) {
-        geofence.forEach {
-            Log.d("xd","dodano ${it.requestId}")
-        }
-
+    fun createGeoFence(context: Context, latLng: LatLng, name: String) {
         geofence.add(
             Geofence.Builder()
                 .setCircularRegion(latLng.latitude, latLng.longitude, Range.toFloat())
-                .setRequestId("item ${id++}")
+                .setRequestId("item $name")
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build()
@@ -63,6 +59,25 @@ object Geofencing {
                 .addOnSuccessListener { println("dodano") }
         }
     }
+
+    @SuppressLint("MissingPermission")
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun removeGeofence(context: Context, latLng: LatLng) {
+        geofence.forEach {
+            if (Geofence.Builder()
+                    .setCircularRegion(latLng.latitude, latLng.longitude, Range.toFloat())
+                    .setRequestId(it.requestId)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE).build() == it
+            ) {
+                Log.d("xd", it.requestId)
+                geofence.remove(it)
+                LocationServices.getGeofencingClient(context)
+                    .removeGeofences(listOf(it.requestId))
+            }
+        }
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun makePendingIntentAlert(context: Context): PendingIntent =

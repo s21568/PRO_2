@@ -16,6 +16,9 @@ interface WishDao {
     @Query("SELECT * FROM WishDto where name=:name")
     fun findByName(name: String): WishDto
 
+    @Query("SELECT * FROM WishDto where latitude=:lat and longtitude=:lng")
+    fun findByLatLng(lat: Float, lng: Float): WishDto
+
     @Query("Delete from WishDto where id= :id ")
     fun delete(id: Long)
 

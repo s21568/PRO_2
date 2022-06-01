@@ -13,13 +13,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
+import com.google.android.gms.maps.model.LatLng
 import pl.edu.pja.pro_2.database.WishDb
 import pl.edu.pja.pro_2.database.WishDto
 import pl.edu.pja.pro_2.databinding.ActivityAddWishBinding
+import pl.edu.pja.pro_2.repository.SharedPrefsLocationRepository
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,7 +41,7 @@ class AddWishActivity : AppCompatActivity() {
     lateinit var currentPhotoPath: String
     private val PICTURE_FROM_CAMERA: Int = 1
     private var uri: Uri? = null
-    var dateNow:String?=null
+    var dateNow: String? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +76,7 @@ class AddWishActivity : AppCompatActivity() {
     fun createImageFile(): File {
         val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        dateNow=simpleDateFormat.format(Date())
+        dateNow = simpleDateFormat.format(Date())
         return File.createTempFile(
             "img_${dateNow}",
             ".jpg",
@@ -83,6 +86,7 @@ class AddWishActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpSaveButton() = view.saveButton.setOnClickListener {
         val colorDef = view.locationDesc.textColors
         if (view.nameWishText.text.isNotBlank()) {
@@ -102,6 +106,14 @@ class AddWishActivity : AppCompatActivity() {
                     )
                     db.wish.insert(wishDto)
                     setResult(Activity.RESULT_OK)
+                    Geofencing.createGeoFence(
+                        this,
+                        LatLng(
+                            mapShared["lat"].toString().toDouble(),
+                            mapShared["lng"].toString().toDouble()
+                        ),
+                        view.nameWishText.text.toString()
+                    )
                     finish()
                 }
             } else {

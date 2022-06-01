@@ -1,9 +1,7 @@
 package pl.edu.pja.pro_2
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -26,19 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(view.root)
         setUpAddButton()
         setUpTaskList()
-        val sharedPrefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
-
-        val lat = sharedPrefs.getFloat("lat", Float.NaN)
-        val lng = sharedPrefs.getFloat("lng", Float.NaN)
-        val tmpMap: MutableMap<String, Float> = mutableMapOf()
-        tmpMap["lat"] = lat
-        tmpMap["lng"] = lng
-        sharedPrefs.edit()
-            .putString("nazwa", tmpMap.toString())
-            .apply()
-        sharedPrefs.edit().remove("nazwa").apply()
-
-
+        Notifications.createChannel(this)
     }
 
     private fun setUpAddButton() = view.addNewWishButton.setOnClickListener {

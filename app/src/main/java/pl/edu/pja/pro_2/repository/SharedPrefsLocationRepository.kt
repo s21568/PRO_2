@@ -30,5 +30,4 @@ class SharedPrefsLocationRepository(context: Context) : LocationRepository {
                 .putFloat(KEY_LNG, value?.longitude?.toFloat() ?: NO_VALUE)
                 .apply()
         }
-
 }

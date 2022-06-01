@@ -115,7 +115,6 @@ class MapFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun save(latLng: LatLng) {
         locationRepository.savedLocation = latLng
-        Geofencing.createGeoFence(requireContext(), latLng)
     }
 
     private fun drawCircle(latLng: LatLng) {
