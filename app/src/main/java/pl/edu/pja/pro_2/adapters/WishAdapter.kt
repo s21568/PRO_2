@@ -39,7 +39,7 @@ class WishAdapter(private val db: WishDb) : RecyclerView.Adapter<WishVH>() {
 
         return WishVH(view).also { holder ->
 
-            con=holder.itemView.context
+            con = holder.itemView.context
             view.root.setOnClickListener {
                 val intent =
                     Intent(holder.itemView.context, EditWishActivity::class.java)
@@ -58,7 +58,7 @@ class WishAdapter(private val db: WishDb) : RecyclerView.Adapter<WishVH>() {
                         Toast.LENGTH_SHORT
                     ).show()
                     val wish = wishList[holder.layoutPosition]
-                    con?.let { Geofencing.removeGeofence(it,LatLng(wish.latitude.toDouble(),wish.longtitude.toDouble())) }
+                    con?.let { Geofencing.removeGeofence(it, wish.name) }
                     delete(holder.layoutPosition)
                     notifyDataSetChanged()
                 }

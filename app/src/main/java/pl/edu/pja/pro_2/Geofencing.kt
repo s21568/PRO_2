@@ -16,7 +16,6 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import pl.edu.pja.pro_2.database.WishDb
 import pl.edu.pja.pro_2.service.AlertService
 
 private const val REQUEST_CODE = 1
@@ -30,12 +29,11 @@ object Geofencing {
         geofence.add(
             Geofence.Builder()
                 .setCircularRegion(latLng.latitude, latLng.longitude, Range.toFloat())
-                .setRequestId("item $name")
+                .setRequestId(name)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build()
         )
-
         val request = GeofencingRequest.Builder()
             .addGeofences(geofence)
             .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
@@ -54,37 +52,27 @@ object Geofencing {
             }
         } else {
             LocationServices.getGeofencingClient(context)
-                .addGeofences(request, makePendingIntentAlert(context))
+                .addGeofences(request, makePendingIntentAlert(name, context))
                 .addOnFailureListener { println(it) }
-                .addOnSuccessListener { println("dodano") }
+                .addOnSuccessListener { println("dodano $name") }
         }
     }
 
-    @SuppressLint("MissingPermission")
     @RequiresApi(Build.VERSION_CODES.O)
-    fun removeGeofence(context: Context, latLng: LatLng) {
-        geofence.forEach {
-            if (Geofence.Builder()
-                    .setCircularRegion(latLng.latitude, latLng.longitude, Range.toFloat())
-                    .setRequestId(it.requestId)
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                    .setExpirationDuration(Geofence.NEVER_EXPIRE).build() == it
-            ) {
-                Log.d("xd", it.requestId)
-                geofence.remove(it)
-                LocationServices.getGeofencingClient(context)
-                    .removeGeofences(listOf(it.requestId))
-            }
-        }
+    fun removeGeofence(context: Context, name: String) {
+        Log.d("xd", "czytam $name")
+        LocationServices.getGeofencingClient(context)
+            .removeGeofences(listOf(name))
+        Log.d("xd", "usuwam $name")
     }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun makePendingIntentAlert(context: Context): PendingIntent =
+    fun makePendingIntentAlert(name: String, context: Context): PendingIntent =
         PendingIntent.getForegroundService(
             context,
             REQUEST_CODE,
-            Intent(context, AlertService::class.java),
+            Intent(context, AlertService::class.java).putExtra("id", name),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 }

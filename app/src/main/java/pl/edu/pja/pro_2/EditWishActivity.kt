@@ -41,7 +41,7 @@ class EditWishActivity : AppCompatActivity() {
     private var dbId: Int = 1
     private var wishList: List<WishDto> = mutableListOf()
     private var bundle: Bundle? = null
-    private var intentval = 1
+    private var intentval = 0
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {

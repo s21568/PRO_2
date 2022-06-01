@@ -6,6 +6,7 @@ import android.content.Intent
 import android.location.Location
 import android.media.MediaPlayer
 import android.os.Build
+import android.os.Bundle
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
@@ -40,10 +41,14 @@ class AlertService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val bundle: Bundle? = intent?.extras
+        val intentval = bundle?.getString("id")
+
+
         if (intent?.getBooleanExtra("check", false) == true) {
             checkLocation()
         }
-        startForeground(NOTIFICATION_ID, Notifications.createNotification(this))
+        startForeground(NOTIFICATION_ID, Notifications.createNotification(intentval?:"", this))
         return START_STICKY
     }
 
