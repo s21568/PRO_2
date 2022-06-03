@@ -18,6 +18,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
+import com.google.android.gms.maps.model.LatLng
 import pl.edu.pja.pro_2.database.WishDb
 import pl.edu.pja.pro_2.database.WishDto
 import pl.edu.pja.pro_2.databinding.ActivityEditWishBinding
@@ -70,13 +71,14 @@ class EditWishActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpEditButton() = view.saveButton.setOnClickListener {
         val colorDef = view.locationDesc.textColors
         if (view.editTextTextPersonName.text.isNotBlank()) {
             view.nameWishDesc.setTextColor(colorDef)
             view.pictureDesc.setTextColor(colorDef)
             executor.submit {
-                var picUrl: String = if (dateNow != null) {
+                val picUrl: String = if (dateNow != null) {
                     "/storage/emulated/0/Pictures/img_${dateNow}.jpg"
                 } else {
                     wishList[intentval].picture_url
@@ -93,6 +95,15 @@ class EditWishActivity : AppCompatActivity() {
 
                 )
                 db.wish.update(wishDto)
+                Geofencing.removeGeofence(this, view.editTextTextPersonName.text.toString())
+                Geofencing.createGeoFence(
+                    this,
+                    LatLng(
+                        mapShared["lat"].toString().toDouble(),
+                        mapShared["lng"].toString().toDouble()
+                    ),
+                    view.editTextTextPersonName.text.toString()
+                )
                 setResult(Activity.RESULT_OK)
                 finish()
             }

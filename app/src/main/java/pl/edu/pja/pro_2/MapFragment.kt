@@ -101,15 +101,7 @@ class MapFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ShowToast")
     private fun askForSave(latLng: LatLng) {
-        Snackbar.make(
-            requireView(),
-            "save location?",
-            Snackbar.LENGTH_INDEFINITE
-        ).setAction(
-            "save"
-        ) {
-            save(latLng)
-        }.show()
+        save(latLng)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -1,7 +1,6 @@
 package pl.edu.pja.pro_2
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -9,7 +8,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.Geofence
@@ -18,7 +16,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import pl.edu.pja.pro_2.service.AlertService
 
-private const val REQUEST_CODE = 1
+private var REQUEST_CODE = 1
 private val geofence: ArrayList<Geofence> = arrayListOf()
 
 object Geofencing {
@@ -54,18 +52,15 @@ object Geofencing {
             LocationServices.getGeofencingClient(context)
                 .addGeofences(request, makePendingIntentAlert(name, context))
                 .addOnFailureListener { println(it) }
-                .addOnSuccessListener { println("dodano $name") }
+                .addOnSuccessListener { println("dodano ${"$name $REQUEST_CODE"}") }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun removeGeofence(context: Context, name: String) {
-        Log.d("xd", "czytam $name")
         LocationServices.getGeofencingClient(context)
             .removeGeofences(listOf(name))
-        Log.d("xd", "usuwam $name")
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun makePendingIntentAlert(name: String, context: Context): PendingIntent =
@@ -73,6 +68,6 @@ object Geofencing {
             context,
             REQUEST_CODE,
             Intent(context, AlertService::class.java).putExtra("id", name),
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_NO_CREATE
         )
 }

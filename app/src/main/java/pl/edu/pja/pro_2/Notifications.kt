@@ -12,8 +12,7 @@ import androidx.core.app.NotificationCompat
 import pl.edu.pja.pro_2.service.AlertService
 
 private const val CHANNEL_ID = "ID_CHANNEL_DEFAULT"
-private const val REQUEST_CODE = 10
-private val wishItemId=0
+private const val REQUEST_CODE = 1
 
 object Notifications {
 
