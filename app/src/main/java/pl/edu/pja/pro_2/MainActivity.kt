@@ -46,10 +46,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == Activity.RESULT_OK) {
-            wishAdapter.load()
-        } else super.onActivityResult(requestCode, resultCode, data)
-    }
+
 
 }

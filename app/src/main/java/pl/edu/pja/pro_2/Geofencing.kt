@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.Geofence
@@ -32,9 +33,10 @@ object Geofencing {
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build()
         )
+
         val request = GeofencingRequest.Builder()
             .addGeofences(geofence)
-            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_EXIT)
             .build()
 
         if (ContextCompat.checkSelfPermission(
@@ -50,10 +52,11 @@ object Geofencing {
             }
         } else {
             LocationServices.getGeofencingClient(context)
-                .addGeofences(request, makePendingIntentAlert(name, context))
+                .addGeofences(request, makePendingIntentAlert( context))
                 .addOnFailureListener { println(it) }
-                .addOnSuccessListener { println("dodano ${"$name $REQUEST_CODE"}") }
+                .addOnSuccessListener { println("dodano") }
         }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -63,11 +66,11 @@ object Geofencing {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun makePendingIntentAlert(name: String, context: Context): PendingIntent =
+    fun makePendingIntentAlert( context: Context): PendingIntent =
         PendingIntent.getForegroundService(
             context,
             REQUEST_CODE,
-            Intent(context, AlertService::class.java).putExtra("id", name),
-            PendingIntent.FLAG_NO_CREATE
+            Intent(context, AlertService::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
 }

@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
@@ -85,25 +84,29 @@ class EditWishActivity : AppCompatActivity() {
                 }
                 val mapShared =
                     getSharedPreferences(FILENAME, Context.MODE_PRIVATE).all
+                val lat=mapShared["lat"].toString().toDouble()
+                val lng=mapShared["lng"].toString().toDouble()
+                mapShared.clear()
                 val wishDto = WishDto(
                     dbId.toLong(),
                     view.editTextTextPersonName.text.toString(),
                     view.editTextDescription.text.toString(),
-                    mapShared["lat"].toString(),
-                    mapShared["lng"].toString(),
+                    lat.toString(),
+                    lng.toString(),
                     picUrl
 
                 )
-                db.wish.update(wishDto)
                 Geofencing.removeGeofence(this, view.editTextTextPersonName.text.toString())
                 Geofencing.createGeoFence(
                     this,
                     LatLng(
-                        mapShared["lat"].toString().toDouble(),
-                        mapShared["lng"].toString().toDouble()
+                        lat,
+                        lng
                     ),
                     view.editTextTextPersonName.text.toString()
                 )
+                db.wish.update(wishDto)
+                db.close()
                 setResult(Activity.RESULT_OK)
                 finish()
             }

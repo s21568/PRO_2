@@ -41,14 +41,10 @@ class AlertService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val bundle: Bundle? = intent?.extras
-        val intentval = bundle?.getString("id")
-
-
         if (intent?.getBooleanExtra("check", false) == true) {
             checkLocation()
         }
-        startForeground(NOTIFICATION_ID, Notifications.createNotification(intentval?:"", this))
+        startForeground(NOTIFICATION_ID, Notifications.createNotification( this))
         return START_STICKY
     }
 
@@ -56,7 +52,7 @@ class AlertService : Service() {
     private fun checkLocation() {
         val req = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 100
+            interval = 500
             numUpdates = 1
         }
         locationClient.requestLocationUpdates(req, callback, Looper.getMainLooper())

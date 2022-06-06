@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
@@ -22,12 +21,10 @@ import com.google.android.gms.maps.model.LatLng
 import pl.edu.pja.pro_2.database.WishDb
 import pl.edu.pja.pro_2.database.WishDto
 import pl.edu.pja.pro_2.databinding.ActivityAddWishBinding
-import pl.edu.pja.pro_2.repository.SharedPrefsLocationRepository
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
-import kotlin.concurrent.thread
 
 const val FILENAME = "settings"
 
@@ -86,6 +83,7 @@ class AddWishActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("WorldReadableFiles")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpSaveButton() = view.saveButton.setOnClickListener {
         val colorDef = view.locationDesc.textColors
@@ -96,24 +94,28 @@ class AddWishActivity : AppCompatActivity() {
                 executor.submit {
                     val mapShared =
                         getSharedPreferences(FILENAME, Context.MODE_WORLD_READABLE).all
+                    val lat=mapShared["lat"].toString().toDouble()
+                    val lng=mapShared["lng"].toString().toDouble()
+                    mapShared.clear()
                     val wishDto = WishDto(
                         0,
                         view.nameWishText.text.toString(),
                         view.addWishDesc.text.toString(),
-                        mapShared["lat"].toString(),
-                        mapShared["lng"].toString(),
+                        lat.toString(),
+                        lng.toString(),
                         "/storage/emulated/0/Pictures/img_${dateNow}.jpg"
                     )
-                    db.wish.insert(wishDto)
-                    setResult(Activity.RESULT_OK)
                     Geofencing.createGeoFence(
                         this,
                         LatLng(
-                            mapShared["lat"].toString().toDouble(),
-                            mapShared["lng"].toString().toDouble()
+                            lat,
+                            lng
                         ),
                         view.nameWishText.text.toString()
                     )
+                    db.wish.insert(wishDto)
+                    db.close()
+                    setResult(Activity.RESULT_OK)
                     finish()
                 }
             } else {

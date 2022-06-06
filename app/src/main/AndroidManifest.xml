@@ -17,7 +17,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAkK_MQgAuYv7F3yo14L5m1G1t0Y5z_tjs" />
+            android:value="AIzaSyCgp9nBss53bGEqlvzTg4AR5pqPmNEb55E" />
         <activity
             android:name=".EditWishActivity"
             android:exported="false" />
